@@ -15,10 +15,13 @@ defmodule DotLocalTest do
 
   @tag :integration
   test "greets the world" do
-    async_cmd!(~w(dns-sd -P hello-test _http._tcp local 4001 hello-test.local 192.168.0.200))
+    name = "hello-test2"
+    {:ok, [{ip, _, _} | _]} = :inet.getif()
+    ip = Enum.map_join(Tuple.to_list(ip), ".", &to_string/1)
+    async_cmd!(~w(dns-sd -P #{name} _http._tcp local 4001 #{name}.local #{ip}))
     start_hello()
 
-    assert HTTPoison.get!("http://hello-test.local:4001/").body == "Hello world"
+    assert HTTPoison.get!("http://#{name}.local:4001/").body == "Hello world"
   end
 
   defp start_hello() do
