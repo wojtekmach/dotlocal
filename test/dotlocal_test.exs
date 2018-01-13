@@ -15,21 +15,14 @@ defmodule DotLocalTest do
 
   @tag :integration
   test "greets the world" do
-    name = "hello-test2"
-    port = 4001
+    name = "hello-test"
 
-    DotLocal.Proxy.start(8888)
-    start_hello(port)
-    DotLocal.register(name, port)
+    opts = [strategy: :one_for_one, name: Hello.Supervisor]
+    children = [
+      DotLocal.child_spec(name, Hello, 8888)
+    ]
+    Supervisor.start_link(children, opts)
 
     assert HTTPoison.get!("http://#{name}.local").body == "Hello world"
-  end
-
-  defp start_hello(port) do
-    children = [
-      Plug.Adapters.Cowboy.child_spec(:http, Hello, [], [port: port])
-    ]
-    opts = [strategy: :one_for_one, name: Hello.Supervisor]
-    Supervisor.start_link(children, opts)
   end
 end
