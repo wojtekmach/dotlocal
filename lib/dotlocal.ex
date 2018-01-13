@@ -9,14 +9,9 @@ defmodule DotLocal do
 
   require Logger
 
-  def proxy_cmd(port) do
-    ~s{echo "rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port #{port}" | sudo pfctl -ef -}
-  end
-
   def child_spec(service_name, backend, proxy_port) do
     register_service(service_name, proxy_port)
     Logger.info("Starting DotLocal.Proxy on port #{proxy_port}")
-    Logger.info("To forward port 80 to #{proxy_port} on macOS 10.12+ run:\n#{proxy_cmd(proxy_port)}")
     Plug.Adapters.Cowboy.child_spec(:http, Proxy, backend, [port: proxy_port])
   end
 

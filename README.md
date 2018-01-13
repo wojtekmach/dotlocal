@@ -1,21 +1,39 @@
 # DotLocal
 
-**TODO: Add description**
+Serve your web app as <http://myapp.local> with minimal configuration.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `dotlocal` to your list of dependencies in `mix.exs`:
+Add to deps:
 
 ```elixir
 def deps do
   [
-    {:dotlocal, "~> 0.1.0"}
+    {:dotlocal, github: "wojtekmach/dotlocal"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/dotlocal](https://hexdocs.pm/dotlocal).
+Add to supervision tree:
 
+```elixir
+defmodule MyApp.Application do
+  def start(_type, _opts) do
+    # ...
+
+    children = [
+      supervisor(Hexpm.Web.Endpoint, []),
+      DotLocal.child_spec("myapp", MyAppWeb.Endpoint, 8888)
+    ]
+
+    # ...
+end
+```
+
+Open <http://myapp.local:8888>.
+
+It's convenient to forward port 80 to 8888 so that we can access this with just <http://myapp.local>; on macOS 10.12+ run:
+
+```
+echo "rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port #{port}" | sudo pfctl -ef -
+```
