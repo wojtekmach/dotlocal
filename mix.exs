@@ -19,6 +19,10 @@ defmodule Dotdev.MixProject do
   end
 
   defp deps do
-    []
+    [
+      {:cowboy, "~> 1.0", only: :test},
+      {:plug, "~> 1.0", only: :test},
+      {:httpoison, "~> 1.0", only: :test}
+    ]
   end
 end
