@@ -1,4 +1,4 @@
-defmodule Dotdev.Application do
+defmodule DotLocal.Application do
   @moduledoc false
 
   use Application
@@ -6,7 +6,7 @@ defmodule Dotdev.Application do
   def start(_type, _args) do
     children = []
 
-    opts = [strategy: :one_for_one, name: Dotdev.Supervisor]
+    opts = [strategy: :one_for_one, name: DotLocal.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

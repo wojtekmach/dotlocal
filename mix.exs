@@ -1,9 +1,9 @@
-defmodule Dotdev.MixProject do
+defmodule DotLocal.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :dotdev,
+      app: :dotlocal,
       version: "0.1.0",
       elixir: "~> 1.6-dev",
       start_permanent: Mix.env() == :prod,
@@ -14,7 +14,7 @@ defmodule Dotdev.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Dotdev.Application, []}
+      mod: {DotLocal.Application, []}
     ]
   end
 

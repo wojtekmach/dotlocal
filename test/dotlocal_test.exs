@@ -10,7 +10,7 @@ defmodule Hello do
   end
 end
 
-defmodule DotdevTest do
+defmodule DotLocalTest do
   use ExUnit.Case
 
   test "greets the world" do
