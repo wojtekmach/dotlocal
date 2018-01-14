@@ -14,16 +14,28 @@ defmodule DotLocalTest do
   use ExUnit.Case
 
   @tag :integration
-  test "greets the world" do
+  test "http" do
     name = "hello-test"
     port = 8888
 
     opts = [strategy: :one_for_one, name: Hello.Supervisor]
+    children = [
+      DotLocal.child_spec(name, Hello, port)
+    ]
+    Supervisor.start_link(children, opts)
 
+    assert get!("http://#{name}.local:#{port}").body == "Hello world"
+  end
+
+  @tag :integration
+  test "https" do
+    name = "hello-test"
+    port = 8889
+
+    opts = [strategy: :one_for_one, name: Hello.Supervisor]
     children = [
       DotLocal.child_spec(name, Hello, port, https: true, otp_app: :dotlocal)
     ]
-
     Supervisor.start_link(children, opts)
 
     assert get!("https://#{name}.local:#{port}").body == "Hello world"
