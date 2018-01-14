@@ -20,7 +20,7 @@ defmodule DotLocalTest do
 
     opts = [strategy: :one_for_one, name: Hello.Supervisor]
     children = [
-      DotLocal.child_spec(service: :hello_test, backend: Hello)
+      DotLocal.child_spec(service: :hello_test, backend: Hello, port: port)
     ]
     Supervisor.start_link(children, opts)
 
@@ -37,6 +37,7 @@ defmodule DotLocalTest do
       DotLocal.child_spec(
         service: :hello_test,
         backend: Hello,
+        port: port,
         https: true,
         keyfile: :code.priv_dir(:dotlocal) ++ '/server.key',
         certfile: :code.priv_dir(:dotlocal) ++ '/server.crt',

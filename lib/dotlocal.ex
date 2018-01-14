@@ -21,8 +21,8 @@ defmodule DotLocal do
   def child_spec(opts) do
     backend = Keyword.fetch!(opts, :backend)
     service = Keyword.fetch!(opts, :service) |> Atom.to_string() |> String.replace("_", "-")
+    port = Keyword.fetch!(opts, :port)
     https? = Keyword.get(opts, :https, false)
-    port = Keyword.get(opts, :port, (if https?, do: 8443, else: 8080))
 
     register_service(service, port)
 

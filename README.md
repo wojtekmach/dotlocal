@@ -23,7 +23,7 @@ defmodule MyApp.Application do
 
     children = [
       supervisor(MyAppWeb.Endpoint, []),
-      DotLocal.child_spec(otp_app: :myapp, backend: MyAppWeb.Endpoint)
+      DotLocal.child_spec(otp_app: :myapp, backend: MyAppWeb.Endpoint, port: 8080)
     ]
 
     # ...
@@ -43,12 +43,16 @@ echo "rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port 8080" | 
 The simplest way to listen on HTTPS is to change `DotLocal.child_spec/1` call from previous section to be:
 
 ```elixir
-DotLocal.child_spec(service: :myapp, backend: MyAppWeb.Endpoint, https: true)
+DotLocal.child_spec(service: :myapp, backend: MyAppWeb.Endpoint, https: true, port: 8443)
 ```
 
 Open <https://myapp.local:8443>.
 
-If you are using port forwarding described in previous section, make sure to forward port 443 for HTTPS.
+If you are using port forwarding described in previous section, make sure to forward port 443 for HTTPS:
+
+```
+echo "rdr pass inet proto tcp from any to any port 443 -> 127.0.0.1 port 8443" | sudo pfctl -ef -
+```
 
 ## HTTPS customization
 
@@ -76,6 +80,7 @@ Update child spec to be:
 DotLocal.child_spec(
   service: :myapp,
   backend: MyAppWeb.Endpoint,
+  port: 8443,
   https: true,
   keyfile: :code.priv_dir(:myapp) ++ '/dotlocal/server.key',
   certfile: :code.priv_dir(:myapp) ++ '/dotlocal/server.crt'
