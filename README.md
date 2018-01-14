@@ -1,6 +1,6 @@
 # DotLocal
 
-Serve your web app as <http://myapp.local> with minimal configuration.
+Serve your web app as myapp.local with minimal configuration.
 
 ## Installation
 
@@ -35,7 +35,7 @@ Open <http://myapp.local:8888>.
 It's convenient to forward port 80 to 8888 so that we can access this with just <http://myapp.local>; on macOS 10.12+ run:
 
 ```
-echo "rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port #{port}" | sudo pfctl -ef -
+echo "rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port 8888" | sudo pfctl -ef -
 ```
 
 ## HTTPS
@@ -51,7 +51,7 @@ In order to access your app over HTTPS follow these steps:
    `:otp_app` option is used to locate certificate files. You can use certificates that
    DotLocal ships with by passing `otp_app: :dotlocal`.
 
-2. Optionally Create `priv/dotlocal/server.key` and `priv/dotlocal/server.crt` files
+2. Optionally create `priv/dotlocal/server.key` and `priv/dotlocal/server.crt` files
 
    To create self-signed certificates, run following commands (based on https://devcenter.heroku.com/articles/ssl-certificate-self)
 
@@ -65,5 +65,7 @@ In order to access your app over HTTPS follow these steps:
 
    openssl x509 -req -sha256 -days 365 -in priv/dotlocal/server.csr -signkey priv/dotlocal/server.key -out priv/dotlocal/server.crt
    ```
+
+Open <https://myapp.local:8888>.
 
 If you are using port forwarding described in previous section, make sure to forward port 443 for HTTPS.
