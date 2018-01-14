@@ -1,4 +1,4 @@
-# DotLocal
+
 
 Serve your web app as myapp.local with minimal configuration.
 
@@ -44,7 +44,7 @@ In order to access your app over HTTPS follow these steps:
 
 1. Add `https: true` and `:otp_app` options in your supervision tree:
 
-   ```
+   ```elixir
    DotLocal.child_spec("myapp", MyAppWeb.Endpoint, 8888, https: true, otp_app: :myapp)
    ```
 
