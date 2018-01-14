@@ -9,7 +9,7 @@ Add to deps:
 ```elixir
 def deps do
   [
-    {:dotlocal, github: "wojtekmach/dotlocal"}
+    {:dotlocal, github: "wojtekmach/dotlocal", only: :dev}
   ]
 end
 ```
