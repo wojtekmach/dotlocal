@@ -19,11 +19,17 @@ defmodule DotLocalTest do
     port = 8888
 
     opts = [strategy: :one_for_one, name: Hello.Supervisor]
+
     children = [
-      DotLocal.child_spec(name, Hello, port)
+      DotLocal.child_spec(name, Hello, port, https: true, otp_app: :dotlocal)
     ]
+
     Supervisor.start_link(children, opts)
 
-    assert HTTPoison.get!("http://#{name}.local:#{port}").body == "Hello world"
+    assert get!("https://#{name}.local:#{port}").body == "Hello world"
+  end
+
+  defp get!(url) do
+    HTTPoison.get!(url, [], ssl: [{:versions, [:"tlsv1.2"]}])
   end
 end
