@@ -19,10 +19,9 @@ defmodule DotLocal.MixProject do
 
   defp deps do
     [
-      {:hackney, "~> 1.0"},
       {:plug, "~> 1.0"},
+      {:cowboy, "~> 1.0"},
 
-      {:cowboy, "~> 1.0", only: :test},
       {:httpoison, "~> 1.0", only: :test}
     ]
   end
