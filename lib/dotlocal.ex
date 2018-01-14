@@ -21,11 +21,11 @@ defmodule DotLocal do
     register_service(service_name, proxy_port)
 
     if opts[:https] do
-      Logger.info("Running DotLocal.Proxy on https://#{service_name}.local:#{proxy_port}")
+      Logger.info("dotlocal: starting proxy on https://#{service_name}.local:#{proxy_port}")
       https_opts = https_opts(opts) |> Keyword.put(:port, proxy_port)
       Plug.Adapters.Cowboy.child_spec(:https, Proxy, backend, https_opts)
     else
-      Logger.info("Running DotLocal.Proxy on http://#{service_name}.local:#{proxy_port}")
+      Logger.info("dotlocal: starting proxy on http://#{service_name}.local:#{proxy_port}")
       http_opts = [port: proxy_port]
       Plug.Adapters.Cowboy.child_spec(:http, Proxy, backend, http_opts)
     end
@@ -44,7 +44,7 @@ defmodule DotLocal do
   end
 
   defp register_service(name, port) do
-    Logger.info("Registering service #{name} on #{ip()}:#{port}")
+    Logger.info("dotlocal: registering service #{name} on #{ip()}:#{port}")
     # TODO: we call this async because dns-d blocks,
     #       we should use a dnssd binding instead of cli
     async_cmd!(~w(dns-sd -P #{name} _http._tcp local #{port} #{name}.local #{ip()}))
