@@ -40,7 +40,15 @@ echo "rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port 8888" | 
 
 ## HTTPS
 
-In order to access your app over HTTPS follow these steps:
+The simplest way to listen on HTTPS is to change `DotLocal.child_spec` call from previous section to be:
+
+```elixir
+DotLocal.child_spec("myapp", MyAppWeb.Endpoint, 8888, https: true, otp_app: :dotlocal)
+```
+
+Open <https://myapp.local:8888>.
+
+A step-by-steo guide is as follows:
 
 1. Add `https: true` and `:otp_app` options in your supervision tree:
 
@@ -65,7 +73,5 @@ In order to access your app over HTTPS follow these steps:
 
    openssl x509 -req -sha256 -days 365 -in priv/dotlocal/server.csr -signkey priv/dotlocal/server.key -out priv/dotlocal/server.crt
    ```
-
-Open <https://myapp.local:8888>.
 
 If you are using port forwarding described in previous section, make sure to forward port 443 for HTTPS.
