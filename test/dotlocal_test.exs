@@ -16,13 +16,14 @@ defmodule DotLocalTest do
   @tag :integration
   test "greets the world" do
     name = "hello-test"
+    port = 8888
 
     opts = [strategy: :one_for_one, name: Hello.Supervisor]
     children = [
-      DotLocal.child_spec(name, Hello, 8888)
+      DotLocal.child_spec(name, Hello, port)
     ]
     Supervisor.start_link(children, opts)
 
-    assert HTTPoison.get!("http://#{name}.local").body == "Hello world"
+    assert HTTPoison.get!("http://#{name}.local:#{port}").body == "Hello world"
   end
 end
