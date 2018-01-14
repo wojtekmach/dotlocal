@@ -12,30 +12,31 @@ defmodule DotLocal do
   @doc """
   ## Options:
 
+  * `:backend` - plug to forwards requests to
+  * `:service` - name of the service
   * `:https` - whether or not to use HTTPS, defaults to `true`
-  * `:otp_app` - the name of the OTP app
-  * `:keyfile` - path to keyfile, defaults to `priv/dotlocal/server.key` for given OTP app
-  * `:cerfile` - path to certfile, defaults to `priv/dotlocal/certfile.key` for given OTP app
+  * `:keyfile` - path to keyfile, defaults to one included with DotLocal
+  * `:cerfile` - path to certfile, defaults to one included with DotLocal
   """
-  def child_spec(service_name, backend, proxy_port, opts \\ []) do
-    register_service(service_name, proxy_port)
+  def child_spec(opts) do
+    backend = Keyword.fetch!(opts, :backend)
+    service = Keyword.fetch!(opts, :service) |> Atom.to_string() |> String.replace("_", "-")
+    https? = Keyword.get(opts, :https, false)
+    port = Keyword.get(opts, :port, (if https?, do: 8443, else: 8080))
 
-    if opts[:https] do
-      Logger.info("dotlocal: starting proxy on https://#{service_name}.local:#{proxy_port}")
-      https_opts = https_opts(opts) |> Keyword.put(:port, proxy_port)
-      Plug.Adapters.Cowboy.child_spec(:https, Proxy, backend, https_opts)
+    register_service(service, port)
+
+    if https? do
+      Plug.Adapters.Cowboy.child_spec(:https, Proxy, backend, Keyword.merge([port: port], https_opts(opts)))
     else
-      Logger.info("dotlocal: starting proxy on http://#{service_name}.local:#{proxy_port}")
-      http_opts = [port: proxy_port]
-      Plug.Adapters.Cowboy.child_spec(:http, Proxy, backend, http_opts)
+      Plug.Adapters.Cowboy.child_spec(:http, Proxy, backend, [port: port])
     end
   end
 
   defp https_opts(opts) do
-    otp_app = Keyword.fetch!(opts, :otp_app)
-    priv_dir = to_string(:code.priv_dir(otp_app))
-    keyfile = Keyword.get(opts, :keyfile, priv_dir <> "/dotlocal/server.key")
-    certfile = Keyword.get(opts, :keyfile, priv_dir <> "/dotlocal/server.crt")
+    priv_dir = :code.priv_dir(:dotlocal)
+    keyfile = Keyword.get(opts, :keyfile, priv_dir ++ '/server.key')
+    certfile = Keyword.get(opts, :certfile, priv_dir ++ '/server.crt')
 
     [
       keyfile: keyfile,
