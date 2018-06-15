@@ -9,7 +9,8 @@ defmodule Dummy.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      xref: xref()
     ]
   end
 
@@ -38,6 +39,14 @@ defmodule Dummy.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"}
+    ]
+  end
+
+  defp xref do
+    [
+      exclude: [
+        {Plug.Conn.WrapperError, :reraise, 3}
+      ]
     ]
   end
 end
