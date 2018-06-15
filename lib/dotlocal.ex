@@ -154,12 +154,12 @@ defmodule DotLocal do
   end
 
   defp child_spec(:http, http_opts, service_opts) do
-    register_service(service_opts.name, http_opts[:port])
+    register_service(:http, service_opts.name, http_opts[:port])
     Plug.Adapters.Cowboy.child_spec(:http, Proxy, service_opts.backend, http_opts)
   end
 
   defp child_spec(:https, https_opts, service_opts) do
-    register_service(service_opts.name, https_opts[:port])
+    register_service(:https, service_opts.name, https_opts[:port])
     priv_dir = :code.priv_dir(:dotlocal)
 
     https_opts =
@@ -171,11 +171,11 @@ defmodule DotLocal do
   end
 
   # TODO: do not call this function in child specs!
-  defp register_service(name, port) do
-    Logger.info("dotlocal: registering service #{name} on #{ip()}:#{port}")
+  defp register_service(protocol, name, port) do
+    Logger.info("dotlocal: registering #{protocol}://#{name}.local:#{port}")
     # TODO: we call this async because dns-d blocks,
     #       we should use a dnssd binding instead of cli
-    async_cmd!(~w(dns-sd -P #{name} _http._tcp local #{port} #{name}.local #{ip()}))
+    async_cmd!(~w(dns-sd -P #{name} _#{protocol}._tcp local #{port} #{name}.local #{ip()}))
   end
 
   defp ip() do
