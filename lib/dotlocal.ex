@@ -4,6 +4,29 @@ defmodule DotLocal.Application do
 
   def start(_type, _args) do
     opts = Application.get_all_env(:dotlocal)
+
+    if !opts[:service] && !opts[:backend] do
+      raise ArgumentError, """
+      DotLocal application is misconfigured
+
+      Add configuration to `config/dev.exs`:
+
+          config :dotlocal,
+            service: :myapp,
+            backend: MyApp.Endpoint,
+            http: [port: 8080],
+            https: [port: 8443]
+
+      Or, configure dependency not to start the application:
+
+          defp deps do
+            # ...
+            {:dotlocal, ">= 0.0.0", only: :dev, runtime: false}
+            # ...
+          end
+      """
+    end
+
     children = DotLocal.child_specs(opts)
 
     opts = [strategy: :one_for_one, name: DotLocal.Supervisor]
@@ -41,7 +64,7 @@ defmodule DotLocal do
   configured e.g. in `config/dev.exs`:
 
       config :dotlocal,
-        service: :dummy,
+        service: :myapp,
         backend: MyApp.Endpoint,
         http: [port: 8080],
         https: [port: 8443]
@@ -70,7 +93,7 @@ defmodule DotLocal do
           # ...
 
           opts = [
-            service: :dummy,
+            service: :myapp,
             backend: MyApp.Endpoint,
             http: [port: 8080],
             https: [port: 8443]
