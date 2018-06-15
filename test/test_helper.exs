@@ -1,1 +1,5 @@
 ExUnit.start()
+Application.ensure_all_started(:cowboy)
+Application.ensure_all_started(:hackney)
+Application.put_env(:dotlocal, :serve_endpoints, true)
+Logger.configure(level: :debug)

@@ -7,13 +7,15 @@ defmodule DotLocal.MixProject do
       version: "0.1.0",
       elixir: "~> 1.4",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {DotLocal.Application, []}
     ]
   end
 
@@ -23,6 +25,12 @@ defmodule DotLocal.MixProject do
       {:cowboy, "~> 1.0"},
 
       {:httpoison, "~> 1.0", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 end

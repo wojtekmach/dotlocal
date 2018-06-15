@@ -15,13 +15,17 @@ defmodule DotLocalTest do
 
   @tag :integration
   test "http" do
-    name = "hello-test"
+    name = "hello-http"
     port = 8080
 
-    opts = [strategy: :one_for_one, name: Hello.Supervisor]
-    children = [
-      DotLocal.child_spec(service: :hello_test, backend: Hello, port: port)
+    opts = [
+      service: :hello_http,
+      backend: Hello,
+      http: [port: port]
     ]
+
+    children = DotLocal.child_specs(opts)
+    opts = [strategy: :one_for_one, name: Hello.Supervisor]
     Supervisor.start_link(children, opts)
 
     assert get!("http://#{name}.local:#{port}").body == "Hello world"
@@ -29,21 +33,17 @@ defmodule DotLocalTest do
 
   @tag :integration
   test "https" do
-    name = "hello-test"
+    name = "hello-https"
     port = 8443
 
-    opts = [strategy: :one_for_one, name: Hello.Supervisor]
-    children = [
-      DotLocal.child_spec(
-        service: :hello_test,
-        backend: Hello,
-        port: port,
-        https: true,
-        keyfile: :code.priv_dir(:dotlocal) ++ '/server.key',
-        certfile: :code.priv_dir(:dotlocal) ++ '/server.crt',
-      )
+    opts = [
+      service: :hello_https,
+      backend: Hello,
+      https: [port: port]
     ]
 
+    children = DotLocal.child_specs(opts)
+    opts = [strategy: :one_for_one, name: Hello.Supervisor]
     Supervisor.start_link(children, opts)
 
     assert get!("https://#{name}.local:#{port}").body == "Hello world"

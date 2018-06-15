@@ -4,6 +4,7 @@ defmodule Dummy.Application do
   def start(_type, _args) do
     children = [
       DummyWeb.Endpoint
+      # DotLocal.child_spec(service: :dummy, backend: DummyWeb.Endpoint, https: true, port: 8443)
     ]
 
     opts = [strategy: :one_for_one, name: Dummy.Supervisor]
